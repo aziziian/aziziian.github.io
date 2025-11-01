@@ -2,13 +2,13 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
            elementFormDefault="qualified" attributeFormDefault="unqualified">
 
-  <!-- Root -->
+  <!-- Root: <Hotels> -->
   <xs:element name="Hotels">
     <xs:complexType>
       <xs:sequence>
         <xs:element name="Hotel" maxOccurs="unbounded">
           <xs:complexType>
-            <!-- CHILD ORDER (left → right): Name, Phone+, Address -->
+            <!-- Order MUST be: Name, Phone+, Address -->
             <xs:sequence>
               <xs:element name="Name" type="xs:string"/>
               <xs:element name="Phone" type="xs:string" minOccurs="1" maxOccurs="unbounded"/>
@@ -20,16 +20,16 @@
                     <xs:element name="City" type="xs:string"/>
                     <xs:element name="State">
                       <xs:simpleType>
-                        <xsrestriction base="xs:string">
-                          <xspattern value="[A-Z]{2}"/>
-                        </xsrestriction>
+                        <xs:restriction base="xs:string">
+                          <xs:pattern value="[A-Z]{2}"/>
+                        </xs:restriction>
                       </xs:simpleType>
                     </xs:element>
                     <xs:element name="Zip">
                       <xs:simpleType>
-                        <xsrestriction base="xs:string">
-                          <xspattern value="\d{5}(-\d{4})?"/>
-                        </xsrestriction>
+                        <xs:restriction base="xs:string">
+                          <xs:pattern value="\d{5}(-\d{4})?"/>
+                        </xs:restriction>
                       </xs:simpleType>
                     </xs:element>
                   </xs:sequence>
@@ -39,10 +39,10 @@
             </xs:sequence>
             <xs:attribute name="Rating">
               <xs:simpleType>
-                <xsrestriction base="xs:decimal">
-                  <xsminInclusive value="0.0"/>
-                  <xsmaxInclusive value="5.0"/>
-                </xsrestriction>
+                <xs:restriction base="xs:decimal">
+                  <xs:minInclusive value="0.0"/>
+                  <xs:maxInclusive value="5.0"/>
+                </xs:restriction>
               </xs:simpleType>
             </xs:attribute>
           </xs:complexType>
