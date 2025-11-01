@@ -79,7 +79,7 @@ namespace ConsoleApp1
             }
 
             // Spec’s success string:
-            return messages.Count == 0 ? "No errors are found" : string.Join(Environment.NewLine, messages);
+            return messages.Count == 0 ? "No Error" : string.Join(Environment.NewLine, messages);
         }
 
         public static string Xml2Json(string xmlUrl)
