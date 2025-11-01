@@ -2,11 +2,13 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
            elementFormDefault="qualified" attributeFormDefault="unqualified">
 
+  <!-- Root: <Hotels> -->
   <xs:element name="Hotels">
     <xs:complexType>
       <xs:sequence>
         <xs:element name="Hotel" maxOccurs="unbounded">
           <xs:complexType>
+            <!-- Sibling order: Name, Phone+, Address -->
             <xs:sequence>
               <xs:element name="Name" type="xs:string"/>
               <xs:element name="Phone" type="xs:string" minOccurs="1" maxOccurs="unbounded"/>
@@ -19,12 +21,13 @@
                     <xs:element name="State" type="xs:string"/>
                     <xs:element name="Zip"   type="xs:string"/>
                   </xs:sequence>
+                  <!-- REQUIRED attribute on Address -->
                   <xs:attribute name="NearestAirport" type="xs:string" use="required"/>
                 </xs:complexType>
               </xs:element>
             </xs:sequence>
+            <!-- OPTIONAL attribute on Hotel -->
             <xs:attribute name="Rating" type="xs:string" use="optional"/>
-          </xs:attribute>
           </xs:complexType>
         </xs:element>
       </xs:sequence>
