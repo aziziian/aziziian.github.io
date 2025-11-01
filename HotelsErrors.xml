@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- (1) WRONG ROOT NAME: 'Hotel' instead of 'Hotels' -->
+<Hotel>
+  <!-- Valid hotel to show contrast -->
+  <Hotel Rating="4.2">
+    <Name>Westin</Name>
+    <Phone>480-968-8885</Phone>
+    <Phone>800-937-8461</Phone>
+    <Address NearestAirport="Sky Harbor">
+      <Number>11</Number>
+      <Street>E 7th St</Street>
+      <City>Tempe</City>
+      <State>AZ</State>
+      <Zip>85281</Zip>
+    </Address>
+  </Hotel>
+
+  <!-- (2) REQUIRED ATTRIBUTE MISSING: Address lacks NearestAirport -->
+  <Hotel>
+    <Name>Tempe Mission Palms</Name>
+    <Phone>480-894-1400</Phone>
+    <Address>
+      <Number>60</Number>
+      <Street>E 5th St</Street>
+      <City>Tempe</City>
+      <State>AZ</State>
+      <Zip>85281</Zip>
+    </Address>
+  </Hotel>
+
+  <!-- (3) MISSING Phone element -->
+  <Hotel Rating="4.0">
+    <Name>Graduate Tempe</Name>
+    <Address NearestAirport="Sky Harbor">
+      <Number>225</Number>
+      <Street>E Apache Blvd</Street>
+      <City>Tempe</City>
+      <State>AZ</State>
+      <Zip>85281</Zip>
+    </Address>
+  </Hotel>
+
+  <!-- (4) Address missing the closing tag (not well-formed) -->
+  <Hotel>
+    <Name>Courtyard Tempe Downtown</Name>
+    <Phone>480-966-2800</Phone>
+    <Address NearestAirport="Sky Harbor">
+      <Number>601</Number>
+      <Street>S Ash Ave</Street>
+      <City>Tempe</City>
+      <State>AZ</State>
+      <Zip>85281</Zip>
+    <!-- </Address>  <-- intentionally omitted -->
+  </Hotel>
+
+  <!-- (5) Two Name elements for one hotel -->
+  <Hotel Rating="3.9">
+    <Name>AC Hotel Phoenix Tempe/Downtown</Name>
+    <Name>Duplicate Name</Name>
+    <Phone>480-642-6140</Phone>
+    <Address NearestAirport="Sky Harbor">
+      <Number>100</Number>
+      <Street>E Rio Salado Pkwy</Street>
+      <City>Tempe</City>
+      <State>AZ</State>
+      <Zip>85281</Zip>
+    </Address>
+  </Hotel>
+</Hotel>
