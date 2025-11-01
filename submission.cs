@@ -3,8 +3,8 @@ using System.Xml.Schema;
 using System.Xml;
 using Newtonsoft.Json;
 using System.IO;
-// extra namespaces are allowed by the template
 using System.Collections.Generic;
+using System.Net; // <-- for TLS 1.2
 
 /**
 * This template file is created for ASU CSE445 Distributed SW Dev Assignment 4.
@@ -23,30 +23,34 @@ namespace ConsoleApp1
 
         public static void Main(string[] args)
         {
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
             string result = Verification(xmlURL, xsdURL);
             Console.WriteLine(result);
 
             result = Verification(xmlErrorURL, xsdURL);
             Console.WriteLine(result);
 
-            result = Xml2Json(xmlURL);
+            result = Xml2Json(xmlURL);   // Per template: pass URL
             Console.WriteLine(result);
         }
 
+        // Q2.1
         public static string Verification(string xmlUrl, string xsdUrl)
         {
+            // return "No errors are found" if XML is valid. Otherwise, return the desired exception message.
             var messages = new List<string>();
 
             try
             {
-                // load XSD
+                // Load XSD (from URL)
                 var schemas = new XmlSchemaSet();
                 using (var xsdReader = XmlReader.Create(xsdUrl))
                 {
                     schemas.Add(null, xsdReader);
                 }
 
-                // validating reader
+                // Configure validating reader
                 var settings = new XmlReaderSettings
                 {
                     ValidationType = ValidationType.Schema,
@@ -55,45 +59,49 @@ namespace ConsoleApp1
                     IgnoreWhitespace = true,
                     IgnoreComments = true
                 };
+
                 settings.ValidationEventHandler += (s, e) =>
                 {
+                    // Collect all messages (errors + warnings)
                     messages.Add($"{e.Severity}: {e.Message}");
                 };
 
-                // validate by walking the XML
+                // Parse & validate
                 using (var reader = XmlReader.Create(xmlUrl, settings))
                 {
-                    while (reader.Read()) { }
+                    while (reader.Read()) { /* walk the doc */ }
                 }
             }
             catch (Exception ex)
             {
+                // Network / well-formedness / other runtime issues
                 messages.Add($"Exception: {ex.Message}");
             }
 
-            return messages.Count == 0 ? "No Error" : string.Join(Environment.NewLine, messages);
+            // Spec’s success string:
+            return messages.Count == 0 ? "No errors are found" : string.Join(Environment.NewLine, messages);
         }
 
         public static string Xml2Json(string xmlUrl)
         {
-            // load from URL
+            // Load XML from URL
             var doc = new XmlDocument();
             doc.Load(xmlUrl);
 
-            var hotelsRoot = doc.DocumentElement;
-            if (hotelsRoot == null || hotelsRoot.Name != "Hotels")
+            var root = doc.DocumentElement;
+            if (root == null || root.Name != "Hotels")
                 throw new InvalidOperationException("Root element must be <Hotels>.");
 
-            var hotelNodes = hotelsRoot.SelectNodes("./Hotel");
+            var hotelNodes = root.SelectNodes("./Hotel");
             var hotelList = new List<object>();
 
             foreach (XmlNode h in hotelNodes)
             {
-                string name = h.SelectSingleNode("./Name")?.InnerText ?? "";
+                var name = h.SelectSingleNode("./Name")?.InnerText ?? "";
 
-                var phoneVals = new List<string>();
+                var phones = new List<string>();
                 foreach (XmlNode p in h.SelectNodes("./Phone"))
-                    phoneVals.Add(p.InnerText);
+                    phones.Add(p.InnerText);
 
                 var addr = h.SelectSingleNode("./Address");
                 if (addr == null)
@@ -112,7 +120,7 @@ namespace ConsoleApp1
                 var hotelObj = new Dictionary<string, object>
                 {
                     ["Name"] = name,
-                    ["Phone"] = phoneVals,
+                    ["Phone"] = phones,
                     ["Address"] = addressObj
                 };
 
@@ -133,14 +141,17 @@ namespace ConsoleApp1
 
             var jsonText = JsonConvert.SerializeObject(jsonRoot);
 
+            // Required by spec: must be de-serializable
             JsonConvert.DeserializeXmlNode(jsonText);
 
             return jsonText;
         }
 
-        private static string GetChildText(XmlNode parent, string child)
+        // helper (allowed by template)
+        private static string GetChildText(XmlNode parent, string childName)
         {
-            return parent.SelectSingleNode("./" + child)?.InnerText ?? "";
+            var n = parent.SelectSingleNode("./" + childName);
+            return n?.InnerText ?? "";
         }
     }
 }
